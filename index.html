@@ -13,7 +13,7 @@
             font-family: 'Poppins', sans-serif;
             background: #000;
             overflow-x: hidden;
-            color: white;
+            color: #fce7f3; /* Changed main text color to light pink */
             margin: 0;
         }
         .font-dancing { font-family: 'Dancing Script', cursive; }
@@ -45,15 +45,16 @@
         .bg-photos { background: linear-gradient(to bottom, #2c0e18, #5a192c); }
         .bg-letter { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 
-        /* --- Carousel Styles (Optimized) --- */
+        /* --- Carousel Styles --- */
         .carousel-container {
             position: relative;
             width: 100%;
-            height: 60vh;
+            height: 55vh; /* Slightly reduced height to fit caption better */
             display: flex;
             justify-content: center;
             align-items: center;
             perspective: 1000px;
+            margin-top: 20px;
         }
         .carousel-item {
             position: absolute;
@@ -90,11 +91,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(236, 72, 153, 0.4); /* Pinkish background */
             backdrop-filter: blur(5px);
             padding: 10px 20px;
             border-radius: 30px;
-            border: 2px solid white;
+            border: 2px solid #fbcfe8; /* Light pink border */
+            color: white;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -104,10 +106,15 @@
             width: 80%;
         }
 
-        /* Golden Border */
-        .golden-glow {
-            border: 4px solid #ffd700;
-            box-shadow: 0 0 20px #ffd700, 0 0 40px #ffaa00;
+        /* --- Pink Glow Border --- */
+        .pink-glow {
+            border: 4px solid #ec4899; /* Pink border */
+            box-shadow: 0 0 20px #ec4899, 0 0 40px #be185d; /* Pink shadows */
+            animation: pulsePink 2s infinite alternate;
+        }
+        @keyframes pulsePink {
+            from { box-shadow: 0 0 15px #ec4899; }
+            to { box-shadow: 0 0 30px #ec4899, 0 0 15px white; }
         }
 
         /* --- Falling Rose Petals --- */
@@ -136,21 +143,24 @@
             overflow-y: auto;
         }
         
-        /* Navigation Buttons */
+        /* Navigation Buttons (Pink Theme) */
         .nav-btn {
-            background: white;
-            color: #d63384;
+            background: #ec4899; /* Pink background */
+            color: white;
             border: none;
             width: 50px;
             height: 50px;
             border-radius: 50%;
             font-size: 1.5rem;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.4);
+            transition: transform 0.2s, background 0.2s;
             z-index: 20;
         }
-        .nav-btn:hover { transform: scale(1.1); }
+        .nav-btn:hover { 
+            transform: scale(1.1); 
+            background: #db2777; /* Darker pink on hover */
+        }
     </style>
 </head>
 <body>
@@ -165,7 +175,7 @@
         <h1 class="text-6xl md:text-8xl font-dancing text-pink-500 mb-6 drop-shadow-lg text-center px-4">
             For Amna...
         </h1>
-        <p class="text-gray-300 text-xl mb-10 font-light tracking-wide">I have a surprise for you</p>
+        <p class="text-pink-200 text-xl mb-10 font-light tracking-wide">I have a surprise for you</p>
         
         <button onclick="startJourney()" class="px-10 py-4 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full text-white font-bold text-xl shadow-lg hover:scale-105 transition-transform duration-300 border-2 border-pink-400">
             Tap to Open ❤️
@@ -185,7 +195,7 @@
     </div>
 
     <div id="screen-3" class="section bg-photos relative">
-        <h2 class="text-4xl font-dancing text-pink-300 mb-4 z-20">Our Moments</h2>
+        <h2 class="text-4xl font-dancing text-pink-300 mb-4 z-20 mt-8 md:mt-0">Our Moments</h2>
 
         <div class="carousel-container">
             <button class="nav-btn absolute left-4 md:left-10" onclick="moveSlide(-1)">❮</button>
@@ -194,11 +204,11 @@
             <button class="nav-btn absolute right-4 md:right-10" onclick="moveSlide(1)">❯</button>
         </div>
 
-        <div class="h-20 flex items-center justify-center px-4 text-center z-20 mt-4">
-            <p id="caption" class="text-xl md:text-2xl font-playfair text-white italic transition-opacity duration-300"></p>
+        <div class="h-20 flex items-center justify-center px-4 text-center z-20 mt-8 mb-2">
+            <p id="caption" class="text-xl md:text-2xl font-playfair text-pink-200 italic transition-opacity duration-300"></p>
         </div>
 
-        <button onclick="nextSection(4)" class="mt-4 px-6 py-2 border border-white/50 text-white rounded-full hover:bg-white/10 transition z-20 text-sm">
+        <button onclick="nextSection(4)" class="mt-4 px-6 py-2 border border-pink-400 text-pink-300 rounded-full hover:bg-pink-900/30 transition z-20 text-sm">
             One Last Thing... ↓
         </button>
     </div>
@@ -229,14 +239,21 @@
             </div>
         </div>
 
-        <button onclick="location.reload()" class="fixed top-5 right-5 text-white/60 hover:text-white text-xs">
+        <button onclick="location.reload()" class="fixed top-5 right-5 text-pink-300 hover:text-white text-xs">
             Replay ↻
         </button>
     </div>
 
     <script>
         // --- CONFIGURATION ---
-        // UPLOAD THESE FILES: pic1.jpg, pic_notification.jpg, pic_mystery.jpg, pic2.jpg, pic3.jpg
+        
+        // =================================================================
+        // ⚠️ IMPORTANT: IF PHOTOS ARE NOT VISIBLE ⚠️
+        // Make sure the filenames in the "img" quotes below EXACTLY match
+        // the filenames of the photos you uploaded.
+        // Example: "pic1.jpg" is DIFFERENT from "Pic1.JPG" or "pic1.jpeg"
+        // =================================================================
+
         const slides = [
             { 
                 img: "pic_notification.jpg", 
@@ -254,7 +271,7 @@
             { 
                 img: "pic3.jpg", 
                 caption: "Our most precious memory together 🌟",
-                golden: true // Adds golden border
+                pinkGlow: true // Changed from 'golden' to 'pinkGlow'
             },
             { 
                 img: "pic1.jpg", 
@@ -292,7 +309,7 @@
             if(id === 4) startRoseRain();
         }
 
-        // --- CAROUSEL LOGIC (Optimized) ---
+        // --- CAROUSEL LOGIC ---
         function renderCarousel() {
             const track = document.getElementById('track');
             track.innerHTML = '';
@@ -300,12 +317,19 @@
             slides.forEach((slide, index) => {
                 const el = document.createElement('div');
                 el.className = 'carousel-item';
-                // Add specific classes
-                if(slide.golden) el.classList.add('golden-glow');
+                
+                // Add Pink Glow if specified
+                if(slide.pinkGlow) el.classList.add('pink-glow');
                 
                 // Image handling
                 const img = document.createElement('img');
                 img.src = slide.img;
+                // Add error handling for missing images
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/300x450/ffb6c1/e91e63?text=Image+Not+Found';
+                    console.error(`Could not load image: ${slide.img}. Check filename.`);
+                };
+
                 
                 // Mystery logic
                 if(slide.mystery) {
@@ -395,7 +419,7 @@
         // --- ROSE RAIN ANIMATION (Section 4) ---
         function startRoseRain() {
             const container = document.getElementById('petals-container');
-            const roseTypes = ['🌹', '🌺', '🥀']; // You can replace with image URLs if preferred
+            const roseTypes = ['🌹', '🌺', '🥀', '🌸']; 
 
             const createPetal = () => {
                 const el = document.createElement('div');
@@ -406,14 +430,10 @@
                 el.style.fontSize = Math.random() * 20 + 20 + 'px';
                 container.appendChild(el);
 
-                // Remove after animation
                 setTimeout(() => el.remove(), 7000);
             };
 
-            // Create many petals quickly
             const interval = setInterval(createPetal, 300);
-            
-            // Stop after 10 seconds to save performance
             setTimeout(() => clearInterval(interval), 15000);
         }
 
