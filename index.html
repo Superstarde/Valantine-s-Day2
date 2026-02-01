@@ -8,12 +8,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* --- Global & Fonts --- */
+        /* --- Global Styles --- */
         body {
             font-family: 'Poppins', sans-serif;
             background: #000;
             overflow-x: hidden;
-            color: #fce7f3; /* Changed main text color to light pink */
+            color: #fce7f3;
             margin: 0;
         }
         .font-dancing { font-family: 'Dancing Script', cursive; }
@@ -39,7 +39,7 @@
             opacity: 1;
         }
 
-        /* --- Background Gradients --- */
+        /* --- Backgrounds --- */
         .bg-intro { background: radial-gradient(circle at center, #2a0a18 0%, #000000 100%); }
         .bg-wish { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #d63384; }
         .bg-photos { background: linear-gradient(to bottom, #2c0e18, #5a192c); }
@@ -49,75 +49,48 @@
         .carousel-container {
             position: relative;
             width: 100%;
-            height: 55vh; /* Slightly reduced height to fit caption better */
+            height: 55vh;
             display: flex;
             justify-content: center;
             align-items: center;
             perspective: 1000px;
             margin-top: 20px;
         }
+        
+        /* The Pink Glow - Applied to ALL photos now */
         .carousel-item {
             position: absolute;
             width: 300px;
             height: 450px;
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             background: #fff;
             overflow: hidden;
             cursor: pointer;
+            
+            /* PINK GLOW EFFECT */
+            border: 4px solid #ec4899; 
+            box-shadow: 0 0 20px #ec4899, 0 0 40px #be185d;
+            animation: pulsePink 3s infinite alternate;
         }
+
+        @keyframes pulsePink {
+            from { box-shadow: 0 0 15px #ec4899; }
+            to { box-shadow: 0 0 35px #ec4899, 0 0 10px white; }
+        }
+
         .carousel-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block; /* Fixes tiny gaps */
         }
-        
+
         /* Mobile sizing */
         @media (max-width: 768px) {
             .carousel-item { width: 260px; height: 380px; }
         }
 
-        /* Mystery Blur Effect */
-        .blur-img {
-            filter: blur(20px) brightness(0.8);
-            transition: filter 0.8s ease;
-        }
-        .blur-img.revealed {
-            filter: blur(0) brightness(1);
-        }
-        .mystery-badge {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(236, 72, 153, 0.4); /* Pinkish background */
-            backdrop-filter: blur(5px);
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 2px solid #fbcfe8; /* Light pink border */
-            color: white;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            pointer-events: none;
-            transition: opacity 0.5s;
-            text-align: center;
-            width: 80%;
-        }
-
-        /* --- Pink Glow Border --- */
-        .pink-glow {
-            border: 4px solid #ec4899; /* Pink border */
-            box-shadow: 0 0 20px #ec4899, 0 0 40px #be185d; /* Pink shadows */
-            animation: pulsePink 2s infinite alternate;
-        }
-        @keyframes pulsePink {
-            from { box-shadow: 0 0 15px #ec4899; }
-            to { box-shadow: 0 0 30px #ec4899, 0 0 15px white; }
-        }
-
-        /* --- Falling Rose Petals --- */
+        /* --- Falling Petals --- */
         .petal {
             position: fixed;
             top: -10vh;
@@ -143,9 +116,9 @@
             overflow-y: auto;
         }
         
-        /* Navigation Buttons (Pink Theme) */
+        /* Navigation Buttons */
         .nav-btn {
-            background: #ec4899; /* Pink background */
+            background: #ec4899;
             color: white;
             border: none;
             width: 50px;
@@ -159,7 +132,7 @@
         }
         .nav-btn:hover { 
             transform: scale(1.1); 
-            background: #db2777; /* Darker pink on hover */
+            background: #db2777; 
         }
     </style>
 </head>
@@ -247,22 +220,16 @@
     <script>
         // --- CONFIGURATION ---
         
-        // =================================================================
-        // ⚠️ IMPORTANT: IF PHOTOS ARE NOT VISIBLE ⚠️
-        // Make sure the filenames in the "img" quotes below EXACTLY match
-        // the filenames of the photos you uploaded.
-        // Example: "pic1.jpg" is DIFFERENT from "Pic1.JPG" or "pic1.jpeg"
-        // =================================================================
-
+        // Ensure these filenames match your uploads EXACTLY.
+        // I removed the "mystery" setting. All photos will show normally.
         const slides = [
             { 
                 img: "pic_notification.jpg", 
                 caption: "You are my favorite notification 📱❤️" 
             },
             { 
-                img: "pic_mystery.jpg", 
-                caption: "Tap to reveal a surprise! 🫣", 
-                mystery: true // Adds blur effect
+                img: "pic_mystery.jpg", // Formerly mystery, now normal
+                caption: "You are full of surprises! 🎁" 
             },
             { 
                 img: "pic2.jpg", 
@@ -270,8 +237,7 @@
             },
             { 
                 img: "pic3.jpg", 
-                caption: "Our most precious memory together 🌟",
-                pinkGlow: true // Changed from 'golden' to 'pinkGlow'
+                caption: "Our most precious memory together 🌟"
             },
             { 
                 img: "pic1.jpg", 
@@ -279,19 +245,13 @@
             }
         ];
 
-        // --- STATE ---
         let currentSlide = 0;
         const bgMusic = document.getElementById('bgMusic');
 
-        // --- SECTION 1 LOGIC (Start) ---
+        // --- SECTION 1 ---
         function startJourney() {
-            // 1. Play Music
             bgMusic.play().catch(e => console.log("Audio interaction needed"));
-            
-            // 2. Go to Wish Screen
             nextSection(2);
-
-            // 3. Animate Wish Screen Text
             setTimeout(() => {
                 gsap.to("#wish-title", { scale: 1, duration: 1, ease: "elastic.out(1, 0.3)" });
                 gsap.to("#wish-sub", { opacity: 1, y: 0, delay: 0.5, duration: 1 });
@@ -299,17 +259,16 @@
             }, 500);
         }
 
-        // --- NAVIGATION LOGIC ---
+        // --- NAVIGATION ---
         function nextSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             const next = document.getElementById(`screen-${id}`);
             next.classList.add('active');
-
             if(id === 3) renderCarousel();
             if(id === 4) startRoseRain();
         }
 
-        // --- CAROUSEL LOGIC ---
+        // --- CAROUSEL ---
         function renderCarousel() {
             const track = document.getElementById('track');
             track.innerHTML = '';
@@ -317,44 +276,31 @@
             slides.forEach((slide, index) => {
                 const el = document.createElement('div');
                 el.className = 'carousel-item';
-                
-                // Add Pink Glow if specified
-                if(slide.pinkGlow) el.classList.add('pink-glow');
-                
-                // Image handling
+                // Note: .carousel-item now has the PINK GLOW in CSS by default for EVERYONE.
+
                 const img = document.createElement('img');
                 img.src = slide.img;
-                // Add error handling for missing images
+                
+                // --- ERROR HANDLING FOR MISSING PHOTOS ---
                 img.onerror = function() {
-                    this.src = 'https://via.placeholder.com/300x450/ffb6c1/e91e63?text=Image+Not+Found';
-                    console.error(`Could not load image: ${slide.img}. Check filename.`);
+                    console.log(`Failed to load: ${slide.img}`);
+                    // Replace broken image with a placeholder box so you know it's missing
+                    this.style.display = 'none';
+                    const errDiv = document.createElement('div');
+                    errDiv.style.width = '100%';
+                    errDiv.style.height = '100%';
+                    errDiv.style.backgroundColor = '#fce7f3';
+                    errDiv.style.color = '#db2777';
+                    errDiv.style.display = 'flex';
+                    errDiv.style.alignItems = 'center';
+                    errDiv.style.justifyContent = 'center';
+                    errDiv.style.textAlign = 'center';
+                    errDiv.style.padding = '20px';
+                    errDiv.innerHTML = `<strong>Image Not Found!</strong><br><br>Check filename:<br>${slide.img}`;
+                    el.appendChild(errDiv);
                 };
 
-                
-                // Mystery logic
-                if(slide.mystery) {
-                    img.classList.add('blur-img');
-                    const badge = document.createElement('div');
-                    badge.className = 'mystery-badge';
-                    badge.innerHTML = "Tap to Reveal<br>🔒";
-                    el.appendChild(badge);
-                    
-                    // Click to reveal
-                    el.onclick = (e) => {
-                        // If it's the active slide, reveal it
-                        if(index === currentSlide) {
-                            img.classList.add('revealed');
-                            badge.style.opacity = '0';
-                        } else {
-                            // If clicking a side slide, move to it
-                            moveSlide(index - currentSlide);
-                        }
-                    };
-                } else {
-                    // Normal slide click moves to it
-                    el.onclick = () => moveSlide(index - currentSlide);
-                }
-
+                el.onclick = () => moveSlide(index - currentSlide);
                 el.appendChild(img);
                 track.appendChild(el);
             });
@@ -369,8 +315,6 @@
         function updateCarousel() {
             const items = document.querySelectorAll('.carousel-item');
             const captionEl = document.getElementById('caption');
-            
-            // Fade out caption
             captionEl.style.opacity = 0;
 
             items.forEach((item, index) => {
@@ -380,7 +324,6 @@
                 let opacity = 0;
                 let pointerEvents = 'none';
 
-                // Handle circular logic visualization
                 let visualOffset = offset;
                 if(offset > slides.length/2) visualOffset -= slides.length;
                 if(offset < -slides.length/2) visualOffset += slides.length;
@@ -392,13 +335,13 @@
                     opacity = 1;
                     pointerEvents = 'auto';
                 } else if (Math.abs(visualOffset) === 1) {
-                    // ADJACENT
+                    // SIDES
                     transform = `translateX(${visualOffset * 220}px) scale(0.8) rotateY(${visualOffset * -15}deg)`;
                     zIndex = 5;
                     opacity = 0.6;
-                    pointerEvents = 'auto'; // allow clicking to move
+                    pointerEvents = 'auto'; 
                 } else {
-                    // HIDDEN/FAR
+                    // HIDDEN
                     transform = `translateX(${visualOffset * 100}px) scale(0)`;
                     opacity = 0;
                 }
@@ -409,35 +352,31 @@
                 item.style.pointerEvents = pointerEvents;
             });
 
-            // Update caption text after small delay
             setTimeout(() => {
                 captionEl.textContent = slides[currentSlide].caption;
                 captionEl.style.opacity = 1;
             }, 300);
         }
 
-        // --- ROSE RAIN ANIMATION (Section 4) ---
+        // --- RAIN ---
         function startRoseRain() {
             const container = document.getElementById('petals-container');
             const roseTypes = ['🌹', '🌺', '🥀', '🌸']; 
-
             const createPetal = () => {
                 const el = document.createElement('div');
                 el.className = 'petal';
                 el.textContent = roseTypes[Math.floor(Math.random() * roseTypes.length)];
                 el.style.left = Math.random() * 100 + 'vw';
-                el.style.animationDuration = Math.random() * 3 + 4 + 's'; // 4-7 seconds fall
+                el.style.animationDuration = Math.random() * 3 + 4 + 's';
                 el.style.fontSize = Math.random() * 20 + 20 + 'px';
                 container.appendChild(el);
-
                 setTimeout(() => el.remove(), 7000);
             };
-
             const interval = setInterval(createPetal, 300);
             setTimeout(() => clearInterval(interval), 15000);
         }
 
-        // --- BACKGROUND HEARTS (Global) ---
+        // --- HEARTS ---
         function initHearts() {
             const container = document.getElementById('hearts-container');
             setInterval(() => {
@@ -450,17 +389,14 @@
                 h.style.fontSize = Math.random() * 20 + 10 + 'px';
                 h.style.transition = 'all 8s linear';
                 container.appendChild(h);
-
                 setTimeout(() => {
                     h.style.top = '-10%';
                     h.style.transform = `rotate(${Math.random() * 360}deg)`;
                 }, 100);
-
                 setTimeout(() => h.remove(), 8000);
             }, 800);
         }
         initHearts();
-
     </script>
 </body>
 </html>
