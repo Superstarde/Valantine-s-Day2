@@ -49,24 +49,21 @@
         .carousel-container {
             position: relative;
             width: 100%;
-            /* Fixed height to prevent overlap */
-            height: 500px; 
+            height: 55vh;
             display: flex;
             justify-content: center;
             align-items: center;
             perspective: 1000px;
-            /* Add spacing so it doesn't touch the text */
-            margin-top: 2rem; 
-            margin-bottom: 2rem;
+            margin-top: 20px;
         }
         
-        /* The Pink Glow - Applied to ALL photos */
+        /* The Pink Glow - Applied to ALL photos now */
         .carousel-item {
             position: absolute;
             width: 300px;
             height: 450px;
             border-radius: 20px;
-            background: #000; /* Dark background to hide white flash */
+            background: #fff;
             overflow: hidden;
             cursor: pointer;
             
@@ -85,14 +82,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
+            display: block; /* Fixes tiny gaps */
         }
 
-        /* Mobile sizing - Smaller photos to prevent text overlap */
+        /* Mobile sizing */
         @media (max-width: 768px) {
-            .carousel-container { height: 400px; margin-top: 1rem; margin-bottom: 1rem; }
-            .carousel-item { width: 240px; height: 350px; }
-            h2.our-moments { font-size: 2.5rem; margin-bottom: 0; }
+            .carousel-item { width: 260px; height: 380px; }
         }
 
         /* --- Falling Petals --- */
@@ -139,11 +134,6 @@
             transform: scale(1.1); 
             background: #db2777; 
         }
-
-        /* Text Glow Class */
-        .text-glow {
-            text-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.4);
-        }
     </style>
 </head>
 <body>
@@ -155,7 +145,7 @@
     <div id="hearts-container" class="fixed inset-0 pointer-events-none z-0"></div>
 
     <div id="screen-1" class="section active bg-intro">
-        <h1 class="text-6xl md:text-8xl font-dancing text-pink-500 mb-6 drop-shadow-lg text-center px-4 text-glow">
+        <h1 class="text-6xl md:text-8xl font-dancing text-pink-500 mb-6 drop-shadow-lg text-center px-4">
             For Amna...
         </h1>
         <p class="text-pink-200 text-xl mb-10 font-light tracking-wide">I have a surprise for you</p>
@@ -177,11 +167,8 @@
         </button>
     </div>
 
-    <div id="screen-3" class="section bg-photos relative flex flex-col justify-between py-10">
-        
-        <h2 class="our-moments text-5xl md:text-6xl font-dancing text-pink-400 z-20 text-glow text-center mt-4">
-            Our Moments
-        </h2>
+    <div id="screen-3" class="section bg-photos relative">
+        <h2 class="text-4xl font-dancing text-pink-300 mb-4 z-20 mt-8 md:mt-0">Our Moments</h2>
 
         <div class="carousel-container">
             <button class="nav-btn absolute left-4 md:left-10" onclick="moveSlide(-1)">❮</button>
@@ -190,14 +177,13 @@
             <button class="nav-btn absolute right-4 md:right-10" onclick="moveSlide(1)">❯</button>
         </div>
 
-        <div class="flex flex-col items-center justify-center z-20 mb-8 px-4">
-            <p id="caption" class="text-xl md:text-2xl font-playfair text-pink-200 italic transition-opacity duration-300 text-center mb-6 h-12">
-                </p>
-
-            <button onclick="nextSection(4)" class="px-6 py-2 border border-pink-400 text-pink-300 rounded-full hover:bg-pink-900/30 transition text-sm">
-                One Last Thing... ↓
-            </button>
+        <div class="h-20 flex items-center justify-center px-4 text-center z-20 mt-8 mb-2">
+            <p id="caption" class="text-xl md:text-2xl font-playfair text-pink-200 italic transition-opacity duration-300"></p>
         </div>
+
+        <button onclick="nextSection(4)" class="mt-4 px-6 py-2 border border-pink-400 text-pink-300 rounded-full hover:bg-pink-900/30 transition z-20 text-sm">
+            One Last Thing... ↓
+        </button>
     </div>
 
     <div id="screen-4" class="section bg-letter">
@@ -234,15 +220,15 @@
     <script>
         // --- CONFIGURATION ---
         
-        // ⚠️ CHECK FILE NAMES EXACTLY!
-        // The white box means the code can't find the image.
+        // Ensure these filenames match your uploads EXACTLY.
+        // I removed the "mystery" setting. All photos will show normally.
         const slides = [
             { 
                 img: "pic1.png", 
                 caption: "I love you more than words can say 💖" 
             },
             { 
-                img: "pic2.jpg",
+                img: "pic2.jpg", // Formerly mystery, now normal
                 caption: "You are full of surprises! 🎁" 
             },
             { 
@@ -290,19 +276,27 @@
             slides.forEach((slide, index) => {
                 const el = document.createElement('div');
                 el.className = 'carousel-item';
+                // Note: .carousel-item now has the PINK GLOW in CSS by default for EVERYONE.
 
                 const img = document.createElement('img');
                 img.src = slide.img;
                 
                 // --- ERROR HANDLING FOR MISSING PHOTOS ---
-                // If the image is missing, this runs to prevent the white box glitch
                 img.onerror = function() {
                     console.log(`Failed to load: ${slide.img}`);
-                    this.style.display = 'none'; // Hide broken image
+                    // Replace broken image with a placeholder box so you know it's missing
+                    this.style.display = 'none';
                     const errDiv = document.createElement('div');
-                    // Style the error box to be transparent pink instead of solid white
-                    errDiv.className = "flex flex-col items-center justify-center h-full w-full text-center p-4 border-2 border-pink-500 border-dashed text-pink-300";
-                    errDiv.innerHTML = `<span class="text-3xl">⚠️</span><br><strong>Image Missing</strong><br><span class="text-xs">File: ${slide.img}</span>`;
+                    errDiv.style.width = '100%';
+                    errDiv.style.height = '100%';
+                    errDiv.style.backgroundColor = '#fce7f3';
+                    errDiv.style.color = '#db2777';
+                    errDiv.style.display = 'flex';
+                    errDiv.style.alignItems = 'center';
+                    errDiv.style.justifyContent = 'center';
+                    errDiv.style.textAlign = 'center';
+                    errDiv.style.padding = '20px';
+                    errDiv.innerHTML = `<strong>Image Not Found!</strong><br><br>Check filename:<br>${slide.img}`;
                     el.appendChild(errDiv);
                 };
 
