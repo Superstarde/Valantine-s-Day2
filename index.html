@@ -15,7 +15,7 @@
             overflow-x: hidden;
             color: #fce7f3;
             margin: 0;
-            -webkit-tap-highlight-color: transparent; /* Fixes mobile tap gray box */
+            -webkit-tap-highlight-color: transparent;
         }
         .font-dancing { font-family: 'Dancing Script', cursive; }
         .font-playfair { font-family: 'Playfair Display', serif; }
@@ -64,7 +64,8 @@
             width: 300px;
             height: 450px;
             border-radius: 20px;
-            background: #000;
+            /* Changed default BG to black so missing images don't show a white box */
+            background: #000; 
             overflow: hidden;
             cursor: pointer;
             border: 4px solid #ec4899; 
@@ -91,8 +92,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(236, 72, 153, 0.5); /* Pink tint */
-            backdrop-filter: blur(15px); /* The Blur */
+            background: rgba(236, 72, 153, 0.5);
+            backdrop-filter: blur(15px);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -170,14 +171,16 @@
             z-index: 20;
         }
         .nav-btn:hover { transform: scale(1.1); background: #db2777; }
+        
         .text-glow { text-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.4); }
         
-        /* Start Button Specifics */
+        /* START BUTTON FIX */
         #start-btn {
-            z-index: 50;
+            z-index: 9999; /* Force it to be on top */
             position: relative;
             cursor: pointer;
             pointer-events: auto;
+            touch-action: manipulation;
         }
     </style>
 </head>
@@ -195,7 +198,7 @@
         </h1>
         <p class="text-pink-200 text-xl mb-10 font-light tracking-wide">I have a surprise for you</p>
         
-        <button id="start-btn" class="px-10 py-4 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full text-white font-bold text-xl shadow-lg hover:scale-105 transition-transform duration-300 border-2 border-pink-400">
+        <button id="start-btn" onclick="startJourney()" class="px-10 py-4 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full text-white font-bold text-xl shadow-lg hover:scale-105 transition-transform duration-300 border-2 border-pink-400">
             Tap to Open ❤️
         </button>
     </div>
@@ -248,37 +251,37 @@
     <script>
         // --- CONFIGURATION ---
         const slides = [
-            { img: "pic4.png", caption: "You are my favorite notification 📱❤️" },
-            { img: "pic5.jng", caption: "You are full of surprises! 🎁" },
+            { img: "pic_notification.jpg", caption: "You are my favorite notification 📱❤️" },
+            { img: "pic_mystery.jpg", caption: "You are full of surprises! 🎁" },
             { img: "pic2.jpg", caption: "Your smile is my daily motivation ✨" },
             { img: "pic3.jpg", caption: "Our most precious memory together 🌟" },
-            { img: "pic1.png", caption: "I love you more than words can say 💖" }
+            { img: "pic1.jpg", caption: "I love you more than words can say 💖" }
         ];
 
         let currentSlide = 0;
         const bgMusic = document.getElementById('bgMusic');
 
         // --- BUTTON FIX ---
-        // This ensures the button works even if audio fails
-        document.getElementById('start-btn').addEventListener('click', function() {
-            // 1. Move to next screen immediately (Visual Priority)
+        // This function is called directly by onclick in HTML
+        function startJourney() {
+            // 1. Move to next screen IMMEDIATELY. Do not wait for music.
             nextSection(2);
 
-            // 2. Try to play audio (Background Priority)
-            bgMusic.play().then(() => {
-                console.log("Audio playing");
-            }).catch(e => {
-                console.log("Audio failed (user didn't interact or file missing):", e);
-                // We do NOT stop the app here. We let it continue.
-            });
-
-            // 3. Start Animations
+            // 2. Start Animations
             setTimeout(() => {
                 gsap.to("#wish-title", { scale: 1, duration: 1, ease: "elastic.out(1, 0.3)" });
                 gsap.to("#wish-sub", { opacity: 1, y: 0, delay: 0.5, duration: 1 });
                 gsap.to("#wish-btn", { opacity: 1, y: 0, delay: 1.5, duration: 1 });
             }, 500);
-        });
+
+            // 3. Attempt to play audio asynchronously
+            // Even if this fails (e.g. browser block), the app has already moved to the next screen.
+            bgMusic.play().then(() => {
+                console.log("Audio playing");
+            }).catch(e => {
+                console.warn("Audio failed to autoplay (browser policy). User interaction on next click might fix it.");
+            });
+        }
 
         function nextSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -295,13 +298,15 @@
                 const el = document.createElement('div');
                 el.className = 'carousel-item';
 
+                // Image handling with Error Check
                 const img = document.createElement('img');
                 img.src = slide.img;
                 img.onerror = function() {
                     this.style.display = 'none'; 
                     const errDiv = document.createElement('div');
-                    errDiv.className = "flex flex-col items-center justify-center h-full w-full text-center p-4 border-2 border-pink-500 border-dashed text-pink-300";
-                    errDiv.innerHTML = `<span class="text-3xl">⚠️</span><br><strong>Image Missing</strong><br><span class="text-xs">File: ${slide.img}</span>`;
+                    // Style the error box to be transparent/dark
+                    errDiv.className = "flex flex-col items-center justify-center h-full w-full text-center p-4 text-pink-300";
+                    errDiv.innerHTML = `<span class="text-3xl">⚠️</span><br><span class="text-xs">Image Missing:<br>${slide.img}</span>`;
                     el.appendChild(errDiv);
                 };
 
