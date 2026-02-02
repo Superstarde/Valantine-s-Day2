@@ -15,11 +15,12 @@
             overflow-x: hidden;
             color: #fce7f3;
             margin: 0;
+            -webkit-tap-highlight-color: transparent; /* Fixes mobile tap gray box */
         }
         .font-dancing { font-family: 'Dancing Script', cursive; }
         .font-playfair { font-family: 'Playfair Display', serif; }
 
-        /* --- Screens / Sections --- */
+        /* --- Screens --- */
         .section {
             display: none;
             height: 100vh;
@@ -45,7 +46,7 @@
         .bg-photos { background: linear-gradient(to bottom, #2c0e18, #5a192c); }
         .bg-letter { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 
-        /* --- Carousel Styles --- */
+        /* --- Carousel --- */
         .carousel-container {
             position: relative;
             width: 100%;
@@ -66,8 +67,6 @@
             background: #000;
             overflow: hidden;
             cursor: pointer;
-            
-            /* PINK GLOW EFFECT */
             border: 4px solid #ec4899; 
             box-shadow: 0 0 20px #ec4899, 0 0 40px #be185d;
             animation: pulsePink 3s infinite alternate;
@@ -85,28 +84,27 @@
             display: block;
         }
 
-        /* --- THE REVEAL LAYER (Fade Out Effect) --- */
+        /* --- FADE OUT REVEAL LAYER --- */
         .reveal-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(236, 72, 153, 0.4); /* Pink tint */
-            backdrop-filter: blur(15px); /* The blur */
+            background: rgba(236, 72, 153, 0.5); /* Pink tint */
+            backdrop-filter: blur(15px); /* The Blur */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: white;
             z-index: 20;
-            transition: opacity 0.8s ease-out; /* Smooth fade */
+            transition: opacity 0.8s ease-out;
         }
         
-        /* When class 'faded' is added, opacity goes to 0 */
         .reveal-overlay.faded {
             opacity: 0;
-            pointer-events: none; /* Allows clicking through to the image */
+            pointer-events: none;
         }
 
         .reveal-text {
@@ -129,10 +127,9 @@
         @media (max-width: 768px) {
             .carousel-container { height: 400px; margin-top: 1rem; margin-bottom: 1rem; }
             .carousel-item { width: 240px; height: 350px; }
-            h2.our-moments { font-size: 2.5rem; margin-bottom: 0; }
         }
 
-        /* --- Falling Petals --- */
+        /* --- Petals --- */
         .petal {
             position: fixed;
             top: -10vh;
@@ -158,7 +155,7 @@
             overflow-y: auto;
         }
         
-        /* Navigation Buttons */
+        /* Nav Buttons */
         .nav-btn {
             background: #ec4899;
             color: white;
@@ -172,14 +169,15 @@
             transition: transform 0.2s, background 0.2s;
             z-index: 20;
         }
-        .nav-btn:hover { 
-            transform: scale(1.1); 
-            background: #db2777; 
-        }
-
-        /* Text Glow Class */
-        .text-glow {
-            text-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.4);
+        .nav-btn:hover { transform: scale(1.1); background: #db2777; }
+        .text-glow { text-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.4); }
+        
+        /* Start Button Specifics */
+        #start-btn {
+            z-index: 50;
+            position: relative;
+            cursor: pointer;
+            pointer-events: auto;
         }
     </style>
 </head>
@@ -197,7 +195,7 @@
         </h1>
         <p class="text-pink-200 text-xl mb-10 font-light tracking-wide">I have a surprise for you</p>
         
-        <button onclick="startJourney()" class="px-10 py-4 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full text-white font-bold text-xl shadow-lg hover:scale-105 transition-transform duration-300 border-2 border-pink-400">
+        <button id="start-btn" class="px-10 py-4 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full text-white font-bold text-xl shadow-lg hover:scale-105 transition-transform duration-300 border-2 border-pink-400">
             Tap to Open ❤️
         </button>
     </div>
@@ -215,22 +213,16 @@
     </div>
 
     <div id="screen-3" class="section bg-photos relative flex flex-col justify-between py-10">
-        
-        <h2 class="our-moments text-5xl md:text-6xl font-dancing text-pink-400 z-20 text-glow text-center mt-4">
+        <h2 class="text-5xl md:text-6xl font-dancing text-pink-400 z-20 text-glow text-center mt-4">
             Our Moments
         </h2>
-
         <div class="carousel-container">
             <button class="nav-btn absolute left-4 md:left-10" onclick="moveSlide(-1)">❮</button>
-            <div id="track" class="w-full h-full flex justify-center items-center relative">
-                </div>
+            <div id="track" class="w-full h-full flex justify-center items-center relative"></div>
             <button class="nav-btn absolute right-4 md:right-10" onclick="moveSlide(1)">❯</button>
         </div>
-
         <div class="flex flex-col items-center justify-center z-20 mb-8 px-4">
-            <p id="caption" class="text-xl md:text-2xl font-playfair text-pink-200 italic transition-opacity duration-300 text-center mb-6 h-12">
-                </p>
-
+            <p id="caption" class="text-xl md:text-2xl font-playfair text-pink-200 italic transition-opacity duration-300 text-center mb-6 h-12"></p>
             <button onclick="nextSection(4)" class="px-6 py-2 border border-pink-400 text-pink-300 rounded-full hover:bg-pink-900/30 transition text-sm">
                 One Last Thing... ↓
             </button>
@@ -239,75 +231,55 @@
 
     <div id="screen-4" class="section bg-letter">
         <div id="petals-container"></div>
-
         <div class="paper relative transform rotate-1">
             <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-32 h-8 bg-pink-200/50 rotate-2"></div>
-            
             <h2 class="text-4xl font-dancing text-center text-rose-600 mb-6">My Dearest Amna,</h2>
-            
             <div class="space-y-4 text-gray-700 font-playfair leading-relaxed text-lg">
                 <p>Happy Valentine's Day, my love! ❤️</p>
-                <p>
-                    I wanted to take a moment to tell you how much you mean to me. You are not just my girlfriend, you are my best friend, my safe place, and my greatest happiness.
-                </p>
-                <p>
-                    Every notification from you makes me smile. Every picture of us reminds me of how lucky I am. Distance implies so little when someone means so much.
-                </p>
-                <p>
-                    Thank you for being you.
-                </p>
-                <p class="text-right font-bold text-pink-600 mt-8 pt-4 border-t border-pink-100">
-                    Forever Yours,<br>
-                    <span class="text-3xl font-dancing">Dev</span>
-                </p>
+                <p>I wanted to take a moment to tell you how much you mean to me. You are not just my girlfriend, you are my best friend, my safe place, and my greatest happiness.</p>
+                <p>Every notification from you makes me smile. Every picture of us reminds me of how lucky I am. Distance implies so little when someone means so much.</p>
+                <p>Thank you for being you.</p>
+                <p class="text-right font-bold text-pink-600 mt-8 pt-4 border-t border-pink-100">Forever Yours,<br><span class="text-3xl font-dancing">Dev</span></p>
             </div>
         </div>
-
-        <button onclick="location.reload()" class="fixed top-5 right-5 text-pink-300 hover:text-white text-xs">
-            Replay ↻
-        </button>
+        <button onclick="location.reload()" class="fixed top-5 right-5 text-pink-300 hover:text-white text-xs">Replay ↻</button>
     </div>
 
     <script>
         // --- CONFIGURATION ---
         const slides = [
-            { 
-                img: "pic4.png", 
-                caption: "You are my favorite notification 📱❤️" 
-            },
-            { 
-                img: "pic.png",
-                caption: "You are full of surprises! 🎁" 
-            },
-            { 
-                img: "pic2.jpg", 
-                caption: "Your smile is my daily motivation ✨" 
-            },
-            { 
-                img: "pic3.jpg", 
-                caption: "Our most precious memory together 🌟"
-            },
-            { 
-                img: "pic1.png", 
-                caption: "I love you more than words can say 💖" 
-            }
+            { img: "pic4.png", caption: "You are my favorite notification 📱❤️" },
+            { img: "pic5.jng", caption: "You are full of surprises! 🎁" },
+            { img: "pic2.jpg", caption: "Your smile is my daily motivation ✨" },
+            { img: "pic3.jpg", caption: "Our most precious memory together 🌟" },
+            { img: "pic1.png", caption: "I love you more than words can say 💖" }
         ];
 
         let currentSlide = 0;
         const bgMusic = document.getElementById('bgMusic');
 
-        // --- SECTION 1 ---
-        function startJourney() {
-            bgMusic.play().catch(e => console.log("Audio interaction needed"));
+        // --- BUTTON FIX ---
+        // This ensures the button works even if audio fails
+        document.getElementById('start-btn').addEventListener('click', function() {
+            // 1. Move to next screen immediately (Visual Priority)
             nextSection(2);
+
+            // 2. Try to play audio (Background Priority)
+            bgMusic.play().then(() => {
+                console.log("Audio playing");
+            }).catch(e => {
+                console.log("Audio failed (user didn't interact or file missing):", e);
+                // We do NOT stop the app here. We let it continue.
+            });
+
+            // 3. Start Animations
             setTimeout(() => {
                 gsap.to("#wish-title", { scale: 1, duration: 1, ease: "elastic.out(1, 0.3)" });
                 gsap.to("#wish-sub", { opacity: 1, y: 0, delay: 0.5, duration: 1 });
                 gsap.to("#wish-btn", { opacity: 1, y: 0, delay: 1.5, duration: 1 });
             }, 500);
-        }
+        });
 
-        // --- NAVIGATION ---
         function nextSection(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             const next = document.getElementById(`screen-${id}`);
@@ -316,16 +288,13 @@
             if(id === 4) startRoseRain();
         }
 
-        // --- CAROUSEL ---
         function renderCarousel() {
             const track = document.getElementById('track');
             track.innerHTML = '';
-
             slides.forEach((slide, index) => {
                 const el = document.createElement('div');
                 el.className = 'carousel-item';
 
-                // 1. Create the Image
                 const img = document.createElement('img');
                 img.src = slide.img;
                 img.onerror = function() {
@@ -336,27 +305,23 @@
                     el.appendChild(errDiv);
                 };
 
-                // 2. Create the "Reveal" Overlay (Fade Out Layer)
+                // Add Reveal Overlay
                 const overlay = document.createElement('div');
                 overlay.className = 'reveal-overlay';
                 overlay.innerHTML = `<div class="reveal-text">Tap to Reveal 🔒</div>`;
 
-                // 3. Logic: Click to Fade Out Overlay
                 el.onclick = (e) => {
-                    // Check if it's the center slide (active)
                     if(index === currentSlide) {
-                        // If it has overlay, remove it (fade out)
                         if(!overlay.classList.contains('faded')) {
                             overlay.classList.add('faded');
                         }
                     } else {
-                        // If clicking a side slide, move to it
                         moveSlide(index - currentSlide);
                     }
                 };
 
                 el.appendChild(img);
-                el.appendChild(overlay); // Add overlay on top of image
+                el.appendChild(overlay);
                 track.appendChild(el);
             });
             updateCarousel();
@@ -371,49 +336,41 @@
             const items = document.querySelectorAll('.carousel-item');
             const captionEl = document.getElementById('caption');
             captionEl.style.opacity = 0;
-
             items.forEach((item, index) => {
                 const offset = index - currentSlide;
                 let zIndex = 0;
                 let transform = '';
                 let opacity = 0;
                 let pointerEvents = 'none';
-
                 let visualOffset = offset;
                 if(offset > slides.length/2) visualOffset -= slides.length;
                 if(offset < -slides.length/2) visualOffset += slides.length;
 
                 if (visualOffset === 0) {
-                    // CENTER
                     transform = 'translateX(0) scale(1)';
                     zIndex = 10;
                     opacity = 1;
                     pointerEvents = 'auto';
                 } else if (Math.abs(visualOffset) === 1) {
-                    // SIDES
                     transform = `translateX(${visualOffset * 220}px) scale(0.8) rotateY(${visualOffset * -15}deg)`;
                     zIndex = 5;
                     opacity = 0.6;
                     pointerEvents = 'auto'; 
                 } else {
-                    // HIDDEN
                     transform = `translateX(${visualOffset * 100}px) scale(0)`;
                     opacity = 0;
                 }
-
                 item.style.transform = transform;
                 item.style.zIndex = zIndex;
                 item.style.opacity = opacity;
                 item.style.pointerEvents = pointerEvents;
             });
-
             setTimeout(() => {
                 captionEl.textContent = slides[currentSlide].caption;
                 captionEl.style.opacity = 1;
             }, 300);
         }
 
-        // --- RAIN ---
         function startRoseRain() {
             const container = document.getElementById('petals-container');
             const roseTypes = ['🌹', '🌺', '🥀', '🌸']; 
@@ -431,7 +388,6 @@
             setTimeout(() => clearInterval(interval), 15000);
         }
 
-        // --- HEARTS ---
         function initHearts() {
             const container = document.getElementById('hearts-container');
             setInterval(() => {
@@ -444,10 +400,7 @@
                 h.style.fontSize = Math.random() * 20 + 10 + 'px';
                 h.style.transition = 'all 8s linear';
                 container.appendChild(h);
-                setTimeout(() => {
-                    h.style.top = '-10%';
-                    h.style.transform = `rotate(${Math.random() * 360}deg)`;
-                }, 100);
+                setTimeout(() => { h.style.top = '-10%'; h.style.transform = `rotate(${Math.random() * 360}deg)`; }, 100);
                 setTimeout(() => h.remove(), 8000);
             }, 800);
         }
